@@ -1,13 +1,9 @@
 package com.example.gesturelock.gesturelock;
 
 import android.app.Activity;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
-import android.graphics.Canvas;
-import android.graphics.Paint;
 
 public class SaveGesture extends Activity {
 

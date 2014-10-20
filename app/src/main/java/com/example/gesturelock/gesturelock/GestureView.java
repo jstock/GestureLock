@@ -8,9 +8,9 @@ import android.util.Pair;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
+import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.Dictionary;
 import java.util.List;
 
 /**
@@ -21,6 +21,7 @@ public class GestureView extends View implements OnTouchListener {
     private Paint paint = new Paint();
     private MotionEvent.PointerCoords pastLocation, curr;
     private List<Pair<Float, Float>> linePoints = new ArrayList<Pair<Float, Float>>();
+    private List<Character> gesture = new ArrayList<Character>();
 
     public GestureView(Context context) {
         super(context);
@@ -58,19 +59,72 @@ public class GestureView extends View implements OnTouchListener {
                 curr = new MotionEvent.PointerCoords();
                 event.getPointerCoords(0, curr);
 
-                if (Math.abs(curr.x - pastLocation.x) > 2 || Math.abs(curr.y - pastLocation.y) > 2) {
+                float diffX, diffY;
+                diffX = curr.x - pastLocation.x;
+                diffY = curr.y - pastLocation.y;
+
+                if (Math.abs(diffX) > 2 || Math.abs(diffY) > 2) {
 
                     // Finger has moved more than 3 pixels in a direction, draw line and update
                     linePoints.add(new Pair<Float, Float>(curr.x, curr.y));
                     invalidate();
                     pastLocation.x = curr.x;
                     pastLocation.y = curr.y;
+
+                }
+
+                if ((Math.abs(diffX) > 10 || Math.abs(diffY) > 10)) {
+                    if (Math.abs(diffX) >= Math.abs(diffY)) {
+
+                        // Horizontal movement
+                        if (diffX > 0) {
+                            // Right movement
+                            if (gesture.size() == 0) {
+                                gesture.add('R');
+                            } else if (gesture.get(gesture.size() - 1) != 'R') {
+                                gesture.add('R');
+                            }
+                        } else {
+                            // Left movement
+                            if (gesture.size() == 0) {
+                                gesture.add('L');
+                            } else if (gesture.get(gesture.size() - 1) != 'L') {
+                                gesture.add('L');
+                            }
+                        }
+
+                    } else {
+
+                        // Vertical movement
+                        if (diffY > 0) {
+                            // Up movement
+                            if (gesture.size() == 0) {
+                                gesture.add('D');
+                            } else if (gesture.get(gesture.size() - 1) != 'D') {
+                                gesture.add('D');
+                            }
+                        } else {
+                            // Down movement
+                            if (gesture.size() == 0) {
+                                gesture.add('U');
+                            } else if (gesture.get(gesture.size() - 1) != 'U') {
+                                gesture.add('U');
+                            }
+                        }
+
+                    }
                 }
 
                 return true;
             case MotionEvent.ACTION_UP:
                 pastLocation = new MotionEvent.PointerCoords();
                 curr = new MotionEvent.PointerCoords();
+
+                // Print out the gesture movements to the screen
+                String result = "";
+                for (Character c : gesture) {result += c.toString();}
+                Toast.makeText(getContext(), result, Toast.LENGTH_LONG).show();
+
                 return true;
             default:
                 return super.onTouchEvent(event);
