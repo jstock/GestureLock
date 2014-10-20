@@ -21,7 +21,7 @@ public class GestureView extends View implements OnTouchListener {
     private Paint paint = new Paint();
     private MotionEvent.PointerCoords pastLocation, curr;
     private List<Pair<Float, Float>> linePoints = new ArrayList<Pair<Float, Float>>();
-    private List<Character> gesture = new ArrayList<Character>();
+    private List<Character> gesture;
 
     public GestureView(Context context) {
         super(context);
@@ -51,6 +51,8 @@ public class GestureView extends View implements OnTouchListener {
 
         switch (action) {
             case MotionEvent.ACTION_DOWN:
+                gesture = new ArrayList<Character>();
+                linePoints = new ArrayList<Pair<Float, Float>>();
                 event.getPointerCoords(0, pastLocation);
                 linePoints.add(new Pair<Float, Float>(pastLocation.x, pastLocation.y));
                 return true;
@@ -73,22 +75,18 @@ public class GestureView extends View implements OnTouchListener {
 
                 }
 
-                if ((Math.abs(diffX) > 10 || Math.abs(diffY) > 10)) {
+                if ((Math.abs(diffX) > 5 || Math.abs(diffY) > 5)) {
                     if (Math.abs(diffX) >= Math.abs(diffY)) {
 
                         // Horizontal movement
                         if (diffX > 0) {
                             // Right movement
-                            if (gesture.size() == 0) {
-                                gesture.add('R');
-                            } else if (gesture.get(gesture.size() - 1) != 'R') {
+                            if (gesture.size() == 0 || gesture.get(gesture.size() - 1) != 'R') {
                                 gesture.add('R');
                             }
                         } else {
                             // Left movement
-                            if (gesture.size() == 0) {
-                                gesture.add('L');
-                            } else if (gesture.get(gesture.size() - 1) != 'L') {
+                            if (gesture.size() == 0 || gesture.get(gesture.size() - 1) != 'L') {
                                 gesture.add('L');
                             }
                         }
@@ -97,17 +95,13 @@ public class GestureView extends View implements OnTouchListener {
 
                         // Vertical movement
                         if (diffY > 0) {
-                            // Up movement
-                            if (gesture.size() == 0) {
-                                gesture.add('D');
-                            } else if (gesture.get(gesture.size() - 1) != 'D') {
+                            // Down movement
+                            if (gesture.size() == 0 || gesture.get(gesture.size() - 1) != 'D') {
                                 gesture.add('D');
                             }
                         } else {
-                            // Down movement
-                            if (gesture.size() == 0) {
-                                gesture.add('U');
-                            } else if (gesture.get(gesture.size() - 1) != 'U') {
+                            // Up movement
+                            if (gesture.size() == 0 || gesture.get(gesture.size() - 1) != 'U') {
                                 gesture.add('U');
                             }
                         }
@@ -123,7 +117,7 @@ public class GestureView extends View implements OnTouchListener {
                 // Print out the gesture movements to the screen
                 String result = "";
                 for (Character c : gesture) {result += c.toString();}
-                Toast.makeText(getContext(), result, Toast.LENGTH_LONG).show();
+                Toast.makeText(getContext(), result, Toast.LENGTH_SHORT).show();
 
                 return true;
             default:
