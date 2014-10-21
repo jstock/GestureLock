@@ -1,6 +1,7 @@
 package com.example.gesturelock.gesturelock;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -117,7 +118,15 @@ public class GestureView extends View implements OnTouchListener {
                 // Print out the gesture movements to the screen
                 String result = "";
                 for (Character c : gesture) {result += c.toString();}
-                Toast.makeText(getContext(), result, Toast.LENGTH_SHORT).show();
+                if (result.equals("RDLU")) {
+                    // Open up image viewing applications via Intent on RDLU gesture
+                    Intent intent = new Intent();
+                    intent.setType("image/*");
+                    intent.setAction(Intent.ACTION_VIEW);
+                    getContext().startActivity(Intent.createChooser(intent, "Quick Photo Gallery"));
+                } else {
+                    Toast.makeText(getContext(), result, Toast.LENGTH_SHORT).show();
+                }
 
                 return true;
             default:
