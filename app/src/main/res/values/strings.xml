@@ -3,6 +3,10 @@
 
     <string name="app_name">GestureLock</string>
     <string name="hello_world">Hello world!</string>
+    <string name="make_a_gesture">Make a gesture!</string>
+    <string name="welcome">Welcome to GestureLock!</string>
+    <string name="button_gotoSaveGestureActivity">Create a Gesture</string>
+    <string name="button_gotoViewGestureActivity">View Saved Gestures</string>
     <string name="action_settings">Settings</string>
 
 </resources>
