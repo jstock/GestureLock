@@ -10,6 +10,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
 import android.widget.Toast;
+import android.net.Uri;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -124,6 +125,10 @@ public class GestureView extends View implements OnTouchListener {
                     intent.setType("image/*");
                     intent.setAction(Intent.ACTION_VIEW);
                     getContext().startActivity(Intent.createChooser(intent, "Quick Photo Gallery"));
+                } else if (result.equals("RULD")){
+                    Intent intent = new Intent(Intent.ACTION_DIAL);
+                    intent.setData(Uri.parse("tel:991"));
+                    getContext().startActivity(intent);
                 } else {
                     Toast.makeText(getContext(), result, Toast.LENGTH_SHORT).show();
                 }
