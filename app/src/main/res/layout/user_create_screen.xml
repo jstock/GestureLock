@@ -1,7 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
@@ -10,10 +7,7 @@
     android:paddingRight="30dp"
     android:paddingTop="20dp"
     android:paddingBottom="20dp"
-    tools:context=".LoginScreen"
-    >
-
-
+    tools:context=".MainActivity" >
     <TextView
         android:id="@+id/textViewDisplay"
         android:layout_width="wrap_content"
@@ -21,7 +15,7 @@
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="35dp"
-        android:text="GestureLock Login"
+        android:text="Create User"
         android:textAppearance="?android:attr/textAppearanceLarge"
         />
 
@@ -36,7 +30,7 @@
         />
 
     <EditText
-        android:id="@+id/editTextUsername"
+        android:id="@+id/username"
         android:layout_width="220dp"
         android:layout_height="wrap_content"
         android:layout_toRightOf="@id/textViewUsername"
@@ -44,6 +38,7 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
         android:layout_alignBottom="@id/textViewUsername"
+        android:ems="10"
         />
 
     <TextView
@@ -57,55 +52,26 @@
         />
 
     <EditText
-        android:id="@+id/editTextPassword"
+        android:id="@+id/createPassword"
         android:layout_width="210dp"
         android:layout_height="wrap_content"
-        android:inputType="textPassword"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
+        android:ems="10"
         android:layout_alignBottom="@id/textViewPassword"
         />
 
-    <TextView
-    android:id="@+id/textViewAttempts"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_marginTop="30dp"
-    android:layout_below="@id/textViewPassword"
-    android:text="Attempts Left: "
-    android:textAppearance="?android:attr/textAppearanceMedium"
-    />
-
-    <TextView
-        android:id="@+id/textViewAttemptCount"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:layout_toRightOf="@id/textViewAttempts"
-        android:layout_toEndOf="@id/textViewAttempts"
-        android:layout_alignBottom="@id/textViewAttempts"
-        />
-
-
     <Button
-        android:id="@+id/buttonLogin"
+        android:id="@+id/button1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:onClick="login"
-        android:text="Login"
+        android:text="Create User"
         android:layout_marginTop="15dip"
         android:layout_centerInParent="true"
-        android:layout_below="@+id/textViewAttemptCount"
+        android:layout_below="@+id/editTextPassword"
         android:textAppearance="?android:attr/textAppearanceMedium"
         />
 
-    <Button android:id="@+id/btnNextScreen"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:text="Create User"
-        android:layout_centerInParent="true"
-        android:layout_below="@+id/buttonLogin"
-        android:layout_marginTop="15dip"/>
+
 
 </RelativeLayout>

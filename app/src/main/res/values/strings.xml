@@ -8,5 +8,7 @@
     <string name="button_gotoSaveGestureActivity">Create a Gesture</string>
     <string name="button_gotoViewGestureActivity">View Saved Gestures</string>
     <string name="action_settings">Settings</string>
+    <string name="save">save to internal storage</string>
+    <string name="read">load from internal storage</string>
 
 </resources>
