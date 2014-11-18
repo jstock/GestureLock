@@ -22,6 +22,7 @@ public class CreateUser extends Activity {
     private EditText userLog;
     private EditText pass;
     private String data;
+    private EditText passVerify;
     private String file = "mydata";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +30,8 @@ public class CreateUser extends Activity {
         setContentView(R.layout.user_create_screen);
         userLog = (EditText)(findViewById(R.id.username));
         pass = (EditText)(findViewById(R.id.createPassword));
+        passVerify = (EditText)(findViewById(R.id.verifyPassword));
+
         Button btnClose = (Button) findViewById(R.id.button1);
         Intent i = getIntent();
         // Binding Click event to Button
@@ -37,40 +40,46 @@ public class CreateUser extends Activity {
             public void onClick(View arg0) {
                 data = "\n:Username:" + userLog.getText().toString() + ":password:" + pass.getText().toString() + ":\n";
                 boolean flag = false;
-                try {
-                    FileInputStream fin = openFileInput(file);
-                    int c;
-                    String temp="";
-                    while( (c = fin.read()) != -1){
-                        temp = temp + Character.toString((char)c);
-                    }
-                    if(pass.getText().toString().isEmpty() || userLog.getText().toString().isEmpty())
-                    {
-                        flag = true;
-                        Toast.makeText(getBaseContext(), "You must enter a username and a password.",
-                                Toast.LENGTH_SHORT).show();
-                    }
-                    if(temp.indexOf(userLog.getText().toString()) > -1)
-                    {
-                        flag = true;
-                        Toast.makeText(getBaseContext(), "A user with that name already exists, please try again.",
-                                Toast.LENGTH_SHORT).show();
-                    }
-                    if(!flag) {
-                        //needs to be Context.MODE_APPEND
-                        FileOutputStream fOut = openFileOutput(file, Context.MODE_APPEND);
-                        fOut.write(data.getBytes());
-                        fOut.close();
-                        Toast.makeText(getBaseContext(), "User created",
-                                Toast.LENGTH_SHORT).show();
+                if(!pass.getText().toString().equals(passVerify.getText().toString()))
+                {
+                    flag = true;
+                    Toast.makeText(getBaseContext(), "Your passwords don't match, please try again.",
+                            Toast.LENGTH_SHORT).show();
+                }
+                if(!flag) {
+                    try {
+                        FileInputStream fin = openFileInput(file);
+                        int c;
+                        String temp = "";
+                        while ((c = fin.read()) != -1) {
+                            temp = temp + Character.toString((char) c);
+                        }
+                        if (pass.getText().toString().isEmpty() || userLog.getText().toString().isEmpty()) {
+                            flag = true;
+                            Toast.makeText(getBaseContext(), "You must enter a username and a password.",
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                        if (temp.indexOf(userLog.getText().toString()) > -1) {
+                            flag = true;
+                            Toast.makeText(getBaseContext(), "A user with that name already exists, please try again.",
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                        if (!flag) {
+                            //needs to be Context.MODE_APPEND
+                            FileOutputStream fOut = openFileOutput(file, Context.MODE_APPEND);
+                            fOut.write(data.getBytes());
+                            fOut.close();
+                            Toast.makeText(getBaseContext(), "User created",
+                                    Toast.LENGTH_SHORT).show();
+                            //Closing SecondScreen Activity
+                            finish();
+                        }
+                    } catch (Exception e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
                         //Closing SecondScreen Activity
                         finish();
                     }
-                } catch (Exception e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                    //Closing SecondScreen Activity
-                    finish();
                 }
 
             }

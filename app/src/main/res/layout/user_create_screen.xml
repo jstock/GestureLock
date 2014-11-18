@@ -55,10 +55,32 @@
         android:id="@+id/createPassword"
         android:layout_width="210dp"
         android:layout_height="wrap_content"
+        android:inputType="textPassword"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
         android:ems="10"
         android:layout_alignBottom="@id/textViewPassword"
+        />
+
+    <TextView
+        android:id="@+id/textVerifyPassword"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/textViewPassword"
+        android:layout_marginTop="30dp"
+        android:text="Verify Password : "
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        />
+
+    <EditText
+        android:id="@+id/verifyPassword"
+        android:layout_width="210dp"
+        android:layout_height="wrap_content"
+        android:inputType="textPassword"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:ems="10"
+        android:layout_alignBottom="@id/textVerifyPassword"
         />
 
     <Button
@@ -68,7 +90,7 @@
         android:text="Create User"
         android:layout_marginTop="15dip"
         android:layout_centerInParent="true"
-        android:layout_below="@+id/editTextPassword"
+        android:layout_below="@+id/textVerifyPassword"
         android:textAppearance="?android:attr/textAppearanceMedium"
         />
 
