@@ -1,7 +1,8 @@
 package com.example.gesturelock.gesturelock;
 
+import android.app.AlertDialog;
 import android.content.Context;
-import android.content.Intent;
+import android.content.DialogInterface;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -9,8 +10,6 @@ import android.util.Pair;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
-import android.widget.Toast;
-import android.net.Uri;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +22,9 @@ public class GestureView extends View implements OnTouchListener {
     private Paint paint = new Paint();
     private MotionEvent.PointerCoords pastLocation, curr;
     private List<Pair<Float, Float>> linePoints = new ArrayList<Pair<Float, Float>>();
-    private List<Character> gesture;
+    private List<Character> gesture, currGesture;
+
+    private boolean showPlaceholder = true;
 
     public GestureView(Context context) {
         super(context);
@@ -32,16 +33,26 @@ public class GestureView extends View implements OnTouchListener {
 
         this.setOnTouchListener(this);
 
+        gesture = new ArrayList<Character>();
         pastLocation = new MotionEvent.PointerCoords();
         curr = new MotionEvent.PointerCoords();
 
+        // Line tracing
         paint.setColor(Color.BLACK);
         paint.setAntiAlias(true);
         paint.setStrokeWidth(5);
+
+        // Placeholder text
+        paint.setTextSize(36);
+        paint.setTextAlign(Paint.Align.CENTER);
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
+        if (showPlaceholder) {
+            int centerHeight = (int) ((canvas.getHeight() / 2) - (paint.descent() + paint.ascent()));
+            canvas.drawText("double tap to save", canvas.getWidth() / 2, centerHeight, paint);
+        }
         for (int i = 0; i < linePoints.size() - 1; i++) {
             canvas.drawLine(linePoints.get(i).first, linePoints.get(i).second, linePoints.get(i + 1).first, linePoints.get(i + 1).second, paint);
         }
@@ -53,7 +64,8 @@ public class GestureView extends View implements OnTouchListener {
 
         switch (action) {
             case MotionEvent.ACTION_DOWN:
-                gesture = new ArrayList<Character>();
+                showPlaceholder = false;
+                currGesture = new ArrayList<Character>();
                 linePoints = new ArrayList<Pair<Float, Float>>();
                 event.getPointerCoords(0, pastLocation);
                 linePoints.add(new Pair<Float, Float>(pastLocation.x, pastLocation.y));
@@ -83,13 +95,13 @@ public class GestureView extends View implements OnTouchListener {
                         // Horizontal movement
                         if (diffX > 0) {
                             // Right movement
-                            if (gesture.size() == 0 || gesture.get(gesture.size() - 1) != 'R') {
-                                gesture.add('R');
+                            if (currGesture.size() == 0 || currGesture.get(currGesture.size() - 1) != 'R') {
+                                currGesture.add('R');
                             }
                         } else {
                             // Left movement
-                            if (gesture.size() == 0 || gesture.get(gesture.size() - 1) != 'L') {
-                                gesture.add('L');
+                            if (currGesture.size() == 0 || currGesture.get(currGesture.size() - 1) != 'L') {
+                                currGesture.add('L');
                             }
                         }
 
@@ -98,13 +110,13 @@ public class GestureView extends View implements OnTouchListener {
                         // Vertical movement
                         if (diffY > 0) {
                             // Down movement
-                            if (gesture.size() == 0 || gesture.get(gesture.size() - 1) != 'D') {
-                                gesture.add('D');
+                            if (currGesture.size() == 0 || currGesture.get(currGesture.size() - 1) != 'D') {
+                                currGesture.add('D');
                             }
                         } else {
                             // Up movement
-                            if (gesture.size() == 0 || gesture.get(gesture.size() - 1) != 'U') {
-                                gesture.add('U');
+                            if (currGesture.size() == 0 || currGesture.get(currGesture.size() - 1) != 'U') {
+                                currGesture.add('U');
                             }
                         }
 
@@ -116,21 +128,36 @@ public class GestureView extends View implements OnTouchListener {
                 pastLocation = new MotionEvent.PointerCoords();
                 curr = new MotionEvent.PointerCoords();
 
-                // Print out the gesture movements to the screen
-                String result = "";
-                for (Character c : gesture) {result += c.toString();}
-                if (result.equals("RDLU")) {
-                    // Open up image viewing applications via Intent on RDLU gesture
-                    Intent intent = new Intent();
-                    intent.setType("image/*");
-                    intent.setAction(Intent.ACTION_VIEW);
-                    getContext().startActivity(Intent.createChooser(intent, "Quick Photo Gallery"));
-                } else if (result.equals("RULD")){
-                    Intent intent = new Intent(Intent.ACTION_DIAL);
-                    intent.setData(Uri.parse("tel:991"));
-                    getContext().startActivity(intent);
-                } else {
-                    Toast.makeText(getContext(), result, Toast.LENGTH_SHORT).show();
+                if (currGesture.size() == 0) { currGesture.add('T'); }
+                gesture.addAll(currGesture);
+
+                if (gesture.size() > 2) {
+
+                    if (gesture.get(gesture.size() - 2).equals('T') && gesture.get(gesture.size() - 1).equals('T')) {
+
+                        String result = "";
+                        for (int i = 0; i < gesture.size() - 2; i++)
+                            result += gesture.get(i).toString();
+
+                        // Ended with double tap, alert user for save confirm
+                        AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
+                        alert.setMessage("Would you like to save gesture " + result + "?");
+                        alert.setPositiveButton("yes", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                dialogInterface.dismiss();
+                            }
+                        });
+                        alert.setNegativeButton("no", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                dialogInterface.dismiss();
+                            }
+                        });
+                        alert.show();
+
+                    }
+
                 }
 
                 return true;
