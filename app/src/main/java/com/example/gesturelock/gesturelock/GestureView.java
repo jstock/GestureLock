@@ -3,6 +3,8 @@ package com.example.gesturelock.gesturelock;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.res.Resources;
+import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -10,6 +12,7 @@ import android.util.Pair;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -146,6 +149,7 @@ public class GestureView extends View implements OnTouchListener {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 dialogInterface.dismiss();
+                                showGestureMappingDialog();
                             }
                         });
                         alert.setNegativeButton("no", new DialogInterface.OnClickListener() {
@@ -164,6 +168,32 @@ public class GestureView extends View implements OnTouchListener {
             default:
                 return super.onTouchEvent(event);
         }
+    }
+
+    private void showGestureMappingDialog() {
+
+        final Resources res = getResources();
+        final TypedArray items = res.obtainTypedArray(R.array.gestureActionMappings);
+
+        CharSequence[] keys = new CharSequence[items.length()];
+        for (int i = 0; i < items.length(); i++) {
+            String line = items.getString(i);
+            keys[i] = line.substring(0, line.lastIndexOf(" "));
+        }
+
+        AlertDialog.Builder build = new AlertDialog.Builder(getContext());
+        build.setTitle("select an action");
+        build.setItems(keys, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                String value = items.getString(i);
+                value = value.substring(value.lastIndexOf(" "), value.length());
+
+                Toast.makeText(getContext(), value, Toast.LENGTH_SHORT).show();
+            }
+        });
+        build.show();
+
     }
 
 }

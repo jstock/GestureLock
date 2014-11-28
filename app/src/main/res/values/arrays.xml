@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <array
+        name="gestureActionMappings">
+            <item>
+                <key>open browser</key>
+                <value>openBrowserApp</value>
+            </item>
+            <item>
+                <key>open calculator</key>
+                <value>openCalculatorApp</value>
+            </item>
+            <item>
+                <key>open calendar</key>
+                <value>openCalendarApp</value>
+            </item>
+            <item>
+                <key>open contacts</key>
+                <value>openContactsApp</value>
+            </item>
+            <item>
+                <key>open email</key>
+                <value>openEmailApp</value>
+            </item>
+            <item>
+                <key>open gallery</key>
+                <value>openGalleryApp</value>
+            </item>
+            <item>
+                <key>open maps</key>
+                <value>openMapsApp</value>
+            </item>
+            <item>
+                <key>open messaging</key>
+                <value>openMessagingApp</value>
+            </item>
+            <item>
+                <key>open music</key>
+                <value>openMusicApp</value>
+            </item>
+        </array>
+</resources>
