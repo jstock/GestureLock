@@ -161,6 +161,8 @@ public class GestureView extends View implements OnTouchListener {
                         });
                         alert.show();
 
+
+
                     }
 
                 }
@@ -199,7 +201,9 @@ public class GestureView extends View implements OnTouchListener {
                 prefsEditor.putString(gesture.toString(), key);
                 prefsEditor.commit();
                 Toast.makeText(getContext(), "Gesture "+ gesture.toString() +"" +
-                        " successfully mapped to action "+ value, Toast.LENGTH_LONG).show();
+                        " successfully mapped to action "+ key, Toast.LENGTH_LONG).show();
+                // Reset gesture
+                gesture.clear();
             }
         });
         build.show();
