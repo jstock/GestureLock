@@ -3,6 +3,7 @@ package com.example.gesturelock.gesturelock;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
@@ -178,6 +179,7 @@ public class GestureView extends View implements OnTouchListener {
         CharSequence[] keys = new CharSequence[items.length()];
         for (int i = 0; i < items.length(); i++) {
             String line = items.getString(i);
+
             keys[i] = line.substring(0, line.lastIndexOf(" "));
         }
 
@@ -186,10 +188,18 @@ public class GestureView extends View implements OnTouchListener {
         build.setItems(keys, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                String value = items.getString(i);
-                value = value.substring(value.lastIndexOf(" "), value.length());
+                String keyValue = items.getString(i);
+                String key = keyValue.substring(0, keyValue.lastIndexOf(" "));
+                String value = keyValue.substring(keyValue.lastIndexOf(" "));
 
-                Toast.makeText(getContext(), value, Toast.LENGTH_SHORT).show();
+                // Store newly created gesture and action mapping
+                SharedPreferences prefs = getContext().getSharedPreferences(
+                        getContext().getString(R.string.shared_pref_name), getContext().MODE_PRIVATE);
+                SharedPreferences.Editor prefsEditor = prefs.edit();
+                prefsEditor.putString(gesture.toString(), key);
+                prefsEditor.commit();
+                Toast.makeText(getContext(), "Gesture "+ gesture.toString() +"" +
+                        " successfully mapped to action "+ value, Toast.LENGTH_LONG).show();
             }
         });
         build.show();

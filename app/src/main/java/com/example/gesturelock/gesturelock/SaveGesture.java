@@ -5,6 +5,9 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
+/**
+ * Activity containing GestureView
+ */
 public class SaveGesture extends Activity {
 
     protected GestureView gestureView;

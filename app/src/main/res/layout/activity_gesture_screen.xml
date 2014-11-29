@@ -14,18 +14,18 @@
         android:layout_height="wrap_content" />
 
     <Button
-        android:id="@+id/viewGestures_button"
-        android:text="@string/button_gotoViewGestureActivity"
+        android:id="@+id/goto_GestureList_button"
+        android:text="@string/button_goto_GestureListActivity"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"/>
 
     <Button
-        android:id="@+id/createGesture_button"
-        android:text="@string/button_gotoSaveGestureActivity"
+        android:id="@+id/goto_SaveGesture_button"
+        android:text="@string/button_goto_SaveGestureActivity"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@id/viewGestures_button"/>
+        android:layout_above="@id/goto_GestureList_button"/>
 
 
 

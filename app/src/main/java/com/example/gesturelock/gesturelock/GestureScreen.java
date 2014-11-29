@@ -10,22 +10,35 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+/**
+ * Home screen
+ */
 public class GestureScreen extends Activity {
 
-    private Button mGotoCreateGestureButton;
+    private Button mGotoSaveGestureButton;
+    private Button mGotoGestureListButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gesture_screen);
 
-
-        mGotoCreateGestureButton =  (Button) findViewById(R.id.createGesture_button);
-
-        mGotoCreateGestureButton.setOnClickListener( new View.OnClickListener() {
+        // Set up button to go to save gesture activity
+        mGotoSaveGestureButton =  (Button) findViewById(R.id.goto_SaveGesture_button);
+        mGotoSaveGestureButton.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(GestureScreen.this, SaveGesture.class);
+                startActivity(intent);
+            }
+        });
+
+        // Set up button to go to gesture list activity
+        mGotoGestureListButton =  (Button) findViewById(R.id.goto_GestureList_button);
+        mGotoGestureListButton.setOnClickListener( new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(GestureScreen.this, GestureListActivity.class);
                 startActivity(intent);
             }
         });
