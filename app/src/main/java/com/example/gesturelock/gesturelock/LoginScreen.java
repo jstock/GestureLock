@@ -1,8 +1,11 @@
 package com.example.gesturelock.gesturelock;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Menu;
@@ -29,8 +32,7 @@ public class LoginScreen extends Activity {
     private TextView loginAttempts;
     private Button login;
     int counter = 3;
-    //BK below
-    private String file = "mydata";
+    DBHelper DB = null;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,81 +52,80 @@ public class LoginScreen extends Activity {
                 //Starting a new Intent
                 Intent nextScreen = new Intent(getApplicationContext(), CreateUser.class);
 
-                //Sending data to another Activity
-                //nextScreen.putExtra("name", inputName.getText().toString());
-                //nextScreen.putExtra("email", inputEmail.getText().toString());
-
-                //Log.e("n", inputName.getText() + "." + inputEmail.getText());
-
                 startActivity(nextScreen);
-
             }
         });
     }
 
     public void login(View view) {
 
-        boolean loginFlag = false;
-        try{
-            FileInputStream fin = openFileInput(file);
-            int c;
-            String temp="";
-            String[] tokens;
-            int counter = 0;
-            String delims ="[:]";
-            while( (c = fin.read()) != -1){
-                temp = temp + Character.toString((char)c);
-            }
-            //see if username is in localStorage
-            if(temp.indexOf(username.getText().toString()) == -1 && !username.getText().toString().toUpperCase().equals("ADMIN"))
-            {
-              Toast.makeText(getBaseContext(), "Sorry there is no such user in our database.",
-                      Toast.LENGTH_SHORT).show();
-            }
-            else
-            {
-                //see if the username matches the password if it does set loginFlag to true, if not leave loginflag false
-                tokens = temp.split(delims);
-                boolean found = false;
-                String testString;
-                while(counter < tokens.length && !found)
-                {
-                    testString = tokens[counter].toString().trim();
-                    if(testString.equals(username.getText().toString())) {
-                        found = true;
-                        counter++;
-                    }
-                    counter++;
-                }
-                if(tokens[counter].equals(password.getText().toString()))
-                {
-                    loginFlag = true;
-                }
-                else
-                {
-                    Toast.makeText(getBaseContext(), "Incorrect password.",
-                            Toast.LENGTH_SHORT).show();
-                }
+        String usernameLogin = username.getText().toString();
+        String passwordLogin = password.getText().toString();
 
-            }
-        }catch(Exception e){
-
+        if(username.equals("") || username == null)
+        {
+            Toast.makeText(getApplicationContext(), "Please enter User Name", Toast.LENGTH_SHORT).show();
         }
-
-        if (username.getText().toString().toUpperCase().equals("ADMIN") || loginFlag)
+        else if(password.equals("") || password == null)
+        {
+            Toast.makeText(getApplicationContext(), "Please enter your Password", Toast.LENGTH_SHORT).show();
+        }
+        else if (usernameLogin.equals("ADMIN"))
         {
             startActivity(new Intent(getApplicationContext(), GestureScreen.class));
         }
         else
         {
-            loginAttempts.setTextColor(ColorStateList.valueOf(Color.RED));
-            counter--;
-            loginAttempts.setText(Integer.toString(counter));
-            if (counter <= 0)
-                login.setEnabled(false);
+            boolean validLogin = validateLogin(usernameLogin, passwordLogin, getBaseContext());
+            if(validLogin)
+            {
+                Intent in = new Intent(getBaseContext(), GestureScreen.class);
+                startActivity(in);
+            }
+            else
+            {
+                loginAttempts.setTextColor(ColorStateList.valueOf(Color.RED));
+                counter--;
+                loginAttempts.setText(Integer.toString(counter));
+                if (counter <= 0)
+                    login.setEnabled(false);
+            }
         }
+    }
 
+    private boolean validateLogin(String username, String password, Context baseContext)
+    {
+        DB = new DBHelper(getBaseContext());
+        SQLiteDatabase db = DB.getReadableDatabase();
 
+        String[] columns = {"_id"};
+
+        String selection = "username=? AND password=?";
+        String[] selectionArgs = {username,password};
+
+        Cursor cursor = null;
+        try{
+
+            cursor = db.query(DBHelper.DATABASE_TABLE_NAME, columns, selection, selectionArgs, null, null, null);
+            startManagingCursor(cursor);
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+        }
+        int numberOfRows = cursor.getCount();
+
+        if(numberOfRows <= 0)
+        {
+            return false;
+        }
+        return true;
+    }
+
+    public void onDestroy()
+    {
+        super.onDestroy();
+        DB.close();
     }
 
     @Override
