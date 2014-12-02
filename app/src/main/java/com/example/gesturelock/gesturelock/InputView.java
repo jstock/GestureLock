@@ -13,6 +13,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.provider.Settings;
 import android.text.TextPaint;
 import android.util.AttributeSet;
@@ -154,12 +155,11 @@ public class InputView extends View implements View.OnTouchListener {
                         if (prefs.contains(parsed.toString())) {
 
                             String function = prefs.getString(parsed.toString(), "");
-                            //Toast.makeText(getContext(), function, Toast.LENGTH_SHORT).show();
 
                             // TODO: Switch case on function string to determine action and call as appropriate
                             switch (function.charAt(0)) {
                                 case 'c':
-                                    // call police
+                                    callPolice();
                                     break;
                                 case 'l':
                                     lockPhone();
@@ -178,6 +178,12 @@ public class InputView extends View implements View.OnTouchListener {
             default:
                 return super.onTouchEvent(event);
         }
+    }
+
+    public void callPolice() {
+        Intent call = new Intent(Intent.ACTION_CALL);
+        call.setData(Uri.parse("tel:911"));
+        getContext().startActivity(call);
     }
 
     public void lockPhone() {
