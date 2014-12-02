@@ -3,12 +3,12 @@
     <array
         name="gestureActionMappings">
             <item>
-                <key>open browser</key>
-                <value>openBrowserApp</value>
+                <key>call police</key>
+                <value>callPolice</value>
             </item>
             <item>
-                <key>open calculator</key>
-                <value>openCalculatorApp</value>
+                <key>lock phone</key>
+                <value>lockPhone</value>
             </item>
             <item>
                 <key>open calendar</key>
@@ -35,8 +35,8 @@
                 <value>openMessagingApp</value>
             </item>
             <item>
-                <key>open music</key>
-                <value>openMusicApp</value>
+                <key>toggle airplane</key>
+                <value>toggleAirplaneMode</value>
             </item>
         </array>
 </resources>

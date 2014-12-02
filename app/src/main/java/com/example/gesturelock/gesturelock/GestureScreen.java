@@ -17,6 +17,7 @@ public class GestureScreen extends Activity {
 
     private Button mGotoSaveGestureButton;
     private Button mGotoGestureListButton;
+    private Button mGotoGestureInputButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +43,15 @@ public class GestureScreen extends Activity {
                 startActivity(intent);
             }
         });
+
+        mGotoGestureInputButton = (Button) findViewById(R.id.btnInputGesture);
+        mGotoGestureInputButton.setOnClickListener( new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(GestureScreen.this, InputActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
     @Override
@@ -63,28 +73,4 @@ public class GestureScreen extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        int action = event.getActionMasked();
-
-        switch(action) {
-            case (MotionEvent.ACTION_DOWN) :
-                Toast.makeText(this.getApplicationContext(), "Down", Toast.LENGTH_SHORT).show();
-                return true;
-            case (MotionEvent.ACTION_MOVE) :
-                Toast.makeText(this.getApplicationContext(), "Move", Toast.LENGTH_SHORT).show();
-                return true;
-            case (MotionEvent.ACTION_UP) :
-                Toast.makeText(this.getApplicationContext(), "Up", Toast.LENGTH_SHORT).show();
-                return true;
-            case (MotionEvent.ACTION_CANCEL) :
-                Toast.makeText(this.getApplicationContext(), "Cancel", Toast.LENGTH_SHORT).show();
-                return true;
-            case (MotionEvent.ACTION_OUTSIDE) :
-                Toast.makeText(this.getApplicationContext(), "Outside", Toast.LENGTH_SHORT).show();
-                return true;
-            default:
-                return super.onTouchEvent(event);
-        }
-    }
 }

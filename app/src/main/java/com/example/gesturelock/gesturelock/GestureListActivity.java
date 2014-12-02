@@ -54,8 +54,6 @@ public class GestureListActivity extends Activity {
 
         // Test data
         SharedPreferences.Editor prefsEditor = prefs.edit();
-        prefsEditor.putString("Gesture 1", "Action Key/Text 1");
-        prefsEditor.putString("Gesture 2", "Action Key/Text 2");
         prefsEditor.commit();
 
         //http://stackoverflow.com/questions/9310479/how-to-iterate-through-all-keys-of-shared-preferences

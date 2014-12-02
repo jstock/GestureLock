@@ -13,7 +13,8 @@
     <string name="title_activity_gesture_details">GestureDetailsActivity</string>
     <string name="title_activity_gesture_list">GestureListActivity</string>
 
-    <!--Shared Preferences-->
+    <!-- Shared Preferences -->
     <string name="shared_pref_name">SAVED_GESTURES</string>
+    <string name="title_activity_input">InputActivity</string>
 
 </resources>

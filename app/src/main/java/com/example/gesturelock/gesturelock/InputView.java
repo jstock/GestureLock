@@ -4,33 +4,34 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
-import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.drawable.Drawable;
+import android.text.TextPaint;
+import android.util.AttributeSet;
 import android.util.Pair;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.View.OnTouchListener;
 import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
 
+
 /**
- * The view that allows users to save Gestures for enhanced phone control
+ * TODO: document your custom view class.
  */
-public class GestureView extends View implements OnTouchListener {
+public class InputView extends View implements View.OnTouchListener {
 
     private Paint paint = new Paint();
     private MotionEvent.PointerCoords pastLocation, curr;
     private List<Pair<Float, Float>> linePoints = new ArrayList<Pair<Float, Float>>();
     private List<Character> gesture, currGesture;
+    private long startTime = 0, endTime = 0;
 
-    private boolean showPlaceholder = true;
-
-    public GestureView(Context context) {
+    public InputView(Context context) {
         super(context);
         setFocusable(true);
         setFocusableInTouchMode(true);
@@ -51,12 +52,16 @@ public class GestureView extends View implements OnTouchListener {
         paint.setTextAlign(Paint.Align.CENTER);
     }
 
+    public InputView(Context context, AttributeSet attrs) {
+        super(context, attrs);
+    }
+
+    public InputView(Context context, AttributeSet attrs, int defStyle) {
+        super(context, attrs, defStyle);
+    }
+
     @Override
     protected void onDraw(Canvas canvas) {
-        if (showPlaceholder) {
-            int centerHeight = (int) ((canvas.getHeight() / 2) - (paint.descent() + paint.ascent()));
-            canvas.drawText("double tap to save", canvas.getWidth() / 2, centerHeight, paint);
-        }
         for (int i = 0; i < linePoints.size() - 1; i++) {
             canvas.drawLine(linePoints.get(i).first, linePoints.get(i).second, linePoints.get(i + 1).first, linePoints.get(i + 1).second, paint);
         }
@@ -68,7 +73,6 @@ public class GestureView extends View implements OnTouchListener {
 
         switch (action) {
             case MotionEvent.ACTION_DOWN:
-                showPlaceholder = false;
                 currGesture = new ArrayList<Character>();
                 linePoints = new ArrayList<Pair<Float, Float>>();
                 event.getPointerCoords(0, pastLocation);
@@ -132,49 +136,24 @@ public class GestureView extends View implements OnTouchListener {
                 pastLocation = new MotionEvent.PointerCoords();
                 curr = new MotionEvent.PointerCoords();
 
-                if (currGesture.size() == 0) { currGesture.add('T'); }
+                if (currGesture.size() == 0) {
+                    currGesture.add('T');
+                }
                 gesture.addAll(currGesture);
 
                 if (gesture.size() > 2) {
 
                     if (gesture.get(gesture.size() - 2).equals('T') && gesture.get(gesture.size() - 1).equals('T')) {
+                        List<Character> parsed = gesture.subList(0, gesture.size() - 2);
+                        SharedPreferences prefs = getContext().getSharedPreferences("SAVED_GESTURES", getContext().MODE_PRIVATE);
+                        if (prefs.contains(parsed.toString())) {
 
-                        String result = "";
-                        for (int i = 0; i < gesture.size() - 2; i++)
-                            result += gesture.get(i).toString();
+                            String function = prefs.getString(parsed.toString(), "");
+                            Toast.makeText(getContext(), function, Toast.LENGTH_SHORT).show();
 
-                        // Store newly created gesture and action mapping
-                        SharedPreferences prefs = getContext().getSharedPreferences(
-                                getContext().getString(R.string.shared_pref_name), getContext().MODE_PRIVATE);
+                            // TODO: Switch case on function string to determine action and call as appropriate
 
-                        gesture = gesture.subList(0, gesture.size() - 2);
-
-                        if (prefs.contains(gesture.toString())) {
-                            Toast.makeText(getContext(), result + " gesture already taken", Toast.LENGTH_SHORT).show();
-                            gesture.clear();
-                            currGesture.clear();
-                            invalidate();
-                            return true;
                         }
-
-                        // Ended with double tap, alert user for save confirm
-                        AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
-                        alert.setMessage("Would you like to save gesture " + result + "?");
-                        alert.setPositiveButton("yes", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                dialogInterface.dismiss();
-                                showGestureMappingDialog();
-                            }
-                        });
-                        alert.setNegativeButton("no", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                dialogInterface.dismiss();
-                            }
-                        });
-                        alert.show();
-
                     }
 
                 }
@@ -184,44 +163,4 @@ public class GestureView extends View implements OnTouchListener {
                 return super.onTouchEvent(event);
         }
     }
-
-    private void showGestureMappingDialog() {
-
-        final Resources res = getResources();
-        final TypedArray items = res.obtainTypedArray(R.array.gestureActionMappings);
-
-        CharSequence[] keys = new CharSequence[items.length()];
-        for (int i = 0; i < items.length(); i++) {
-            String line = items.getString(i);
-            keys[i] = line.substring(0, line.lastIndexOf(" "));
-        }
-
-        AlertDialog.Builder build = new AlertDialog.Builder(getContext());
-        build.setTitle("select an action");
-        build.setItems(keys, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                String keyValue = items.getString(i);
-                String key = keyValue.substring(0, keyValue.lastIndexOf(" "));
-                String value = keyValue.substring(keyValue.lastIndexOf(" "));
-
-                SharedPreferences gestures = getContext().getSharedPreferences(
-                        getContext().getString(R.string.shared_pref_name), getContext().MODE_PRIVATE);
-
-                SharedPreferences.Editor prefsEditor = gestures.edit();
-
-
-                prefsEditor.putString(gesture.toString(), key);
-                prefsEditor.commit();
-                Toast.makeText(getContext(), "Gesture "+ gesture.toString() +"" +
-                        " successfully mapped to action "+ key, Toast.LENGTH_LONG).show();
-                // Reset gesture
-                gesture.clear();
-
-            }
-        });
-        build.show();
-
-    }
-
 }
