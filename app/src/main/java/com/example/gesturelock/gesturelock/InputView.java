@@ -1,6 +1,9 @@
 package com.example.gesturelock.gesturelock;
 
 import android.app.AlertDialog;
+import android.app.admin.DeviceAdminReceiver;
+import android.app.admin.DevicePolicyManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -159,7 +162,7 @@ public class InputView extends View implements View.OnTouchListener {
                                     // call police
                                     break;
                                 case 'l':
-                                    // lock phone
+                                    lockPhone();
                                     break;
                                 case 'o':
                                     // open phone app, use Intents
@@ -175,5 +178,21 @@ public class InputView extends View implements View.OnTouchListener {
             default:
                 return super.onTouchEvent(event);
         }
+    }
+
+    public void lockPhone() {
+        DevicePolicyManager dpm = (DevicePolicyManager) getContext().getSystemService(Context.DEVICE_POLICY_SERVICE);
+        ComponentName name = new ComponentName(getContext(), LockReceiver.class);
+
+        if (!dpm.isAdminActive(name)) {
+
+            Intent intent = new Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN);
+            intent.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, name);
+            intent.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION, "GestureLock");
+            getContext().startActivity(intent);
+
+        }
+
+        dpm.lockNow();
     }
 }
