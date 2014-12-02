@@ -34,9 +34,5 @@
                 <key>open messaging</key>
                 <value>openMessagingApp</value>
             </item>
-            <item>
-                <key>toggle airplane</key>
-                <value>toggleAirplaneMode</value>
-            </item>
         </array>
 </resources>

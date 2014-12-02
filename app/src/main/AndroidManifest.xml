@@ -9,7 +9,7 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".LoginScreen"
-            android:label="GestureLockLogin" >
+            android:label="GestureLockLogin">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
